@@ -1,0 +1,14 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "setup:submodules": {
+      "cache": false,
+      "outputs": []
+    },
+    "prepare:conformance": {
+      "dependsOn": ["setup:submodules"],
+      "cache": false,
+      "outputs": []
+    }
+  }
+}

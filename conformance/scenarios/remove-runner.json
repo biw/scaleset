@@ -1,0 +1,6 @@
+{
+  "name": "client › remove runner",
+  "operation": "removeRunner",
+  "input": { "id": 7 },
+  "actionsResponses": [{ "status": 204 }]
+}

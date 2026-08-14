@@ -1,0 +1,6 @@
+{
+  "name": "client › get runner",
+  "operation": "getRunner",
+  "input": { "id": 7 },
+  "actionsResponses": [{ "body": { "id": 7, "name": "self-hosted-ubuntu" } }]
+}

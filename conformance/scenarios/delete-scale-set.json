@@ -1,0 +1,6 @@
+{
+  "name": "client › delete scale set",
+  "operation": "deleteRunnerScaleSet",
+  "input": { "id": 4 },
+  "actionsResponses": [{ "status": 204 }]
+}

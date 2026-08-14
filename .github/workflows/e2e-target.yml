@@ -1,0 +1,20 @@
+name: Scale Set E2E Target
+
+on:
+  workflow_dispatch:
+    inputs:
+      scaleset_name:
+        description: Runner scale-set label created by the E2E test
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  run:
+    name: Run on the temporary scale set
+    runs-on: "${{ inputs.scaleset_name }}"
+    timeout-minutes: 5
+    steps:
+      - name: Confirm runner execution
+        run: echo "Scale-set E2E target completed"

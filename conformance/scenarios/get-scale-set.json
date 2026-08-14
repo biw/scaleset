@@ -1,0 +1,6 @@
+{
+  "name": "client › get scale set",
+  "operation": "getRunnerScaleSet",
+  "input": { "runnerGroupId": 3, "name": "scale" },
+  "actionsResponses": [{ "body": { "count": 1, "value": [{ "id": 4, "name": "scale" }] } }]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "session › poll message",
+  "operation": "getMessage",
+  "input": { "scaleSetId": 4, "owner": "owner", "lastMessageId": 3, "maxCapacity": 8 },
+  "actionsResponses": [
+    {
+      "body": {
+        "sessionId": "00000000-0000-0000-0000-000000000001",
+        "ownerName": "owner",
+        "messageQueueUrl": "<queue-url>",
+        "messageQueueAccessToken": "queue-token"
+      }
+    }
+  ],
+  "queueResponses": [
+    {
+      "body": {
+        "messageId": 4,
+        "messageType": "RunnerScaleSetJobMessages",
+        "body": "[{\"messageType\":\"JobAvailable\",\"runnerRequestId\":9}]"
+      }
+    }
+  ]
+}

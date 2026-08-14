@@ -1,0 +1,6 @@
+{
+  "name": "client › get runner by name",
+  "operation": "getRunnerByName",
+  "input": { "name": "runner" },
+  "actionsResponses": [{ "body": { "count": 1, "value": [{ "id": 7, "name": "runner" }] } }]
+}

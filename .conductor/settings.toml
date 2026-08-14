@@ -1,0 +1,10 @@
+"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
+
+[scripts]
+setup = "bash -o pipefail -c './.conductor/setup.sh 2>&1 | tee .conductor/setup.log'"
+run_mode = "concurrent"
+
+[scripts.run.test]
+command = "./.conductor/run-tests.sh"
+default = true
+icon = "test-tube"

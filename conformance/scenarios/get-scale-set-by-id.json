@@ -1,0 +1,6 @@
+{
+  "name": "client › get scale set by ID",
+  "operation": "getRunnerScaleSetByID",
+  "input": { "id": 4 },
+  "actionsResponses": [{ "body": { "id": 4, "name": "scale" } }]
+}

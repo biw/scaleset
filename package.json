@@ -1,0 +1,86 @@
+{
+  "name": "scaleset",
+  "version": "1.0.0",
+  "description": "TypeScript client for GitHub Actions Runner Scale Set APIs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biw/scaleset.git"
+  },
+  "homepage": "https://github.com/biw/scaleset#readme",
+  "bugs": {
+    "url": "https://github.com/biw/scaleset/issues"
+  },
+  "keywords": [
+    "github-actions",
+    "runner-scale-set",
+    "self-hosted-runner",
+    "actions-runner-controller",
+    "autoscaling"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "packageManager": "pnpm@11.22.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "check": "vp check && pnpm test && pnpm test:coverage && pnpm test:package",
+    "format": "vp fmt . --write",
+    "format:check": "vp fmt --check .",
+    "lint": "vp lint .",
+    "prepare": "pnpm setup:submodules",
+    "test": "pnpm setup:conformance && vp test run",
+    "test:coverage": "pnpm setup:conformance && CI=false vp test run --coverage",
+    "test:e2e": "pnpm setup:conformance && RUN_SCALESET_E2E=true vp test run tests/upstream-parity.test.ts tests/typescript-e2e.test.ts",
+    "test:package": "pnpm build && tsx scripts/check-package.ts",
+    "test:unit": "vp test run --exclude tests/conformance.test.ts --exclude tests/upstream-parity.test.ts --exclude tests/go-subtests.test.ts --exclude tests/conformance-map.test.ts --exclude tests/typescript-e2e.test.ts",
+    "test:unit:watch": "vp test --exclude tests/conformance.test.ts --exclude tests/upstream-parity.test.ts --exclude tests/go-subtests.test.ts --exclude tests/conformance-map.test.ts --exclude tests/typescript-e2e.test.ts",
+    "test:upstream": "pnpm setup:conformance && vp test run tests/upstream-parity.test.ts tests/go-subtests.test.ts",
+    "test:conformance:map": "vp test run tests/conformance-map.test.ts",
+    "conformance:map:sync": "tsx conformance/scripts/sync-test-map.ts",
+    "test:go-reference": "pnpm setup:conformance && tsx conformance/scripts/run-go-reference.ts",
+    "test:go-reference:stable": "pnpm test:go-reference",
+    "audit:dependencies": "pnpm audit --prod --audit-level=high",
+    "setup:submodules": "git submodule update --init --recursive",
+    "setup:conformance": "turbo run prepare:conformance --output-logs=errors-only",
+    "test:conformance": "pnpm setup:conformance && vp test run tests/conformance.test.ts",
+    "prepare:conformance": "bash ./conformance/scripts/prepare.sh",
+    "conformance": "vp test run tests/conformance.test.ts",
+    "typecheck": "vp check --no-fmt --no-lint"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "catalog:",
+    "tsx": "^4.23.12",
+    "turbo": "^2.10.10",
+    "typescript": "^7.0.2",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
+  },
+  "dependencies": {
+    "undici": "^8.10.0"
+  }
+}

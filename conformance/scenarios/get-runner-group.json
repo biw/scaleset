@@ -1,0 +1,13 @@
+{
+  "name": "client › get runner group",
+  "operation": "getRunnerGroupByName",
+  "input": { "name": "group" },
+  "actionsResponses": [
+    {
+      "body": {
+        "count": 1,
+        "value": [{ "id": 3, "name": "group", "size": 1, "isDefaultGroup": false }]
+      }
+    }
+  ]
+}

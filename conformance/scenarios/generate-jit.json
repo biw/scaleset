@@ -1,0 +1,8 @@
+{
+  "name": "client › generate JIT configuration",
+  "operation": "generateJitRunnerConfig",
+  "input": { "scaleSetId": 4, "name": "runner", "workFolder": "_work" },
+  "actionsResponses": [
+    { "body": { "encodedJITConfig": "jit", "runner": { "id": 7, "name": "runner" } } }
+  ]
+}

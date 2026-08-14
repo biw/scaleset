@@ -1,0 +1,6 @@
+{
+  "name": "client › update scale set",
+  "operation": "updateRunnerScaleSet",
+  "input": { "id": 4, "name": "scale" },
+  "actionsResponses": [{ "body": { "id": 4, "name": "scale" } }]
+}

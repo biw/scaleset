@@ -1,0 +1,1002 @@
+{
+  "upstream": {
+    "repository": "https://github.com/actions/scaleset",
+    "version": "main@cb0405b",
+    "commit": "cb0405b2d874500e75ae34eff8d582ab75956b45"
+  },
+  "tests": [
+    {
+      "source": "client_test.go",
+      "test": "TestNewGitHubAPIRequest",
+      "coverage": "conformance",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithPersonalAccessToken",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithBothTokenAndGitHubApp",
+      "coverage": "deferred",
+      "reason": "The discriminated Credential union makes supplying both PAT and GitHub App credentials unrepresentable at runtime; constructor validation is covered for every representable credential shape."
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest",
+      "coverage": "conformance",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunner",
+      "coverage": "conformance",
+      "target": "conformance/scenarios/get-runner.json"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerByName",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestDeleteRunner",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerGroupByName",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestListRunnerScaleSets",
+      "coverage": "conformance",
+      "target": "conformance/scenarios/list-runner-scale-sets.json"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestUpdateRunnerScaleSet",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestDeleteRunnerScaleSet",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGenerateJitRunnerConfig",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestServerWithSelfSignedCertificates",
+      "coverage": "native",
+      "target": "src/node.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestClient_Do",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestClientProxy",
+      "coverage": "native",
+      "target": "src/node.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestUserAgent",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithLogger",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithRetryableHTTPClient",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificate",
+      "coverage": "native",
+      "target": "tests/upstream-parity.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificateFromFile",
+      "coverage": "native",
+      "target": "tests/upstream-parity.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig",
+      "coverage": "conformance",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig_GitHubAPIURL",
+      "coverage": "conformance",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestActionsExceptionError",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestCreateMessageSession",
+      "coverage": "conformance",
+      "target": "tests/session-listener.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage",
+      "coverage": "conformance",
+      "target": "tests/session-listener.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage",
+      "coverage": "native",
+      "target": "tests/session-listener.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestAcquireJobs",
+      "coverage": "native",
+      "target": "tests/session-listener.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestNew",
+      "coverage": "native",
+      "target": "tests/session-listener.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestListener_Run",
+      "coverage": "conformance",
+      "target": "tests/session-listener.test.ts"
+    },
+    {
+      "source": "examples/dockerscaleset/e2e_test.go",
+      "test": "TestE2E",
+      "coverage": "reference",
+      "target": "tests/upstream-parity.test.ts and tests/typescript-e2e.test.ts",
+      "reason": "CI runs both the pinned Go Docker provider and the equivalent TypeScript Docker provider against the private runner environment."
+    }
+  ],
+  "nestedTests": [
+    {
+      "source": "session_client_test.go",
+      "test": "TestAcquireJobs/Acquire_jobs_successfully",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestAcquireJobs/Empty_request_IDs",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestAcquireJobs/Message_token_expired",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestAcquireJobs/Message_token_refreshed",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestAcquireJobs/Server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestActionsExceptionError/contains_the_exception_name_and_message",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestClient_Do/trims_byte_order_mark_from_response_if_present",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestClient_Do/trims_byte_order_mark_from_response_if_present/when_there_is_no_body",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestCreateMessageSession/CreateMessageSession_call_is_retried_the_correct_amount_of_times",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestCreateMessageSession/CreateMessageSession_includes_actions_exception_details",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestCreateMessageSession/CreateMessageSession_unmarshals_correctly",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/CreateRunnerScaleSet_calls_correct_url",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/Create_runner_scale_set",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/Error_when_Content-Type_is_text/plain",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/populates_labels_with_the_scale_set_name_when_none_are_provided",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/preserves_caller-provided_labels",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestCreateRunnerScaleSet/returns_an_error_when_both_name_and_labels_are_empty",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage/Delete_existing_message",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage/Error_when_Content-Type_is_text/plain",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage/Message_token_expired",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage/No_message_found",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestDeleteMessage/message_token_refreshed",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestDeleteRunner/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestDeleteRunner/Delete_Runner",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestDeleteRunnerScaleSet/Delete_calls_with_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestDeleteRunnerScaleSet/Delete_runner_scale_set",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGenerateJitRunnerConfig/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGenerateJitRunnerConfig/Get_JIT_Config_for_Runner",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Capacity_error_handling",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Concurrent_expired_token_refreshes_once",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Error_when_Content-Type_is_text/plain",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/GetMessage_sets_the_last_message_id_if_not_0",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Get_Runner_Scale_Set_Message",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Message_token_expired",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Message_token_refreshed",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "session_client_test.go",
+      "test": "TestGetMessage/Status_code_not_found",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunner/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunner/Get_Runner",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerByName/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerByName/Get_Runner_by_Name",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerByName/Get_Runner_by_name_with_not_exist_runner",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerGroupByName/Get_RunnerGroup_by_Name",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerGroupByName/Get_RunnerGroup_by_name_with_not_exist_runner_group",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/Error_when_Content-Type_is_text/plain",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/GetRunnerScaleSet_calls_correct_url",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/Get_existing_scale_set",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/Multiple_runner_scale_sets_found",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/RunnerScaleSet_count_is_zero",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSet/Status_code_not_found",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID/Default_retries_on_server_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID/Error_when_Content-Type_is_text/plain",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID/GetRunnerScaleSetByID_calls_correct_url",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID/Get_existing_scale_set_by_Id",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID/No_RunnerScaleSet_found",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestGetRunnerScaleSetByID/Status_code_not_found",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://github.com/enterprises/my-enterprise",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://github.com/enterprises/my-enterprise/",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://github.com/org",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://github.com/org/repo",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://github.com/org/repo/",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://github.localhost/org",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://my-ghes.com/org",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://my-ghes.com/org/",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://my-ghes.ghe.com/org/",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://www.github.com/org",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_a_valid_URL/https://www.github.com/org/",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig/when_given_an_invalid_URL",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig_GitHubAPIURL/when_hosted",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig_GitHubAPIURL/when_hosted_with_ghe.com",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig_GitHubAPIURL/when_not_hosted",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "config_test.go",
+      "test": "TestGitHubConfig_GitHubAPIURL/when_not_hosted_with_ghe.com",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestListener_Run/call_handle_regardless_of_initial_message",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestListener_Run/cancel_context_after_get_message",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestNew/creates_listener",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestNew/invalid_config",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestNew/invalid_max_runners",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestNew/valid_config",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestNew/zero_max_runners",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/builds_the_right_URL_including_api_version",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/manages_authentication",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/manages_authentication/admin_token_is_about_to_expire",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/manages_authentication/admin_token_refresh_failure",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/manages_authentication/admin_token_refresh_retry",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/manages_authentication/client_is_brand_new",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/manages_authentication/token_is_currently_valid",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewActionsServiceRequest/populates_header",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithBothTokenAndGitHubApp/returns_error_when_both_credentials_are_provided",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp/creates_client_with_app_auth",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp/returns_error_for_missing_app_auth_fields",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp/returns_error_for_missing_app_auth_fields/missing_client_id",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp/returns_error_for_missing_app_auth_fields/missing_installation_id",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp/returns_error_for_missing_app_auth_fields/missing_private_key",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithPersonalAccessToken/creates_client_with_PAT",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithPersonalAccessToken/returns_error_when_token_is_missing",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewGitHubAPIRequest/sets_the_body_we_pass",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewGitHubAPIRequest/uses_the_right_host/path_prefix",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/agent_not_found_exception_maps_to_sentinel_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/empty_body_returns_unknown_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/invalid_json_returns_unmarshal_error_and_includes_body",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/job_still_running_exception_maps_to_sentinel_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/known_actions_exception_maps_to_sentinel_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/read_body_failure_includes_read_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/resp_body_is_nil",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/resp_is_nil",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/scalesetError_in_error_chain_uses_raw_body_(no_JSON_parsing)",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/text/plain_body_is_included",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/unknown_content_length_and_empty_body_returns_unknown_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "errors_test.go",
+      "test": "TestNewRequestResponseError/unknown_json_error_wraps_exception",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestServerWithSelfSignedCertificates/client_skipping_tls_verification",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestServerWithSelfSignedCertificates/client_with_ca_certs",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestServerWithSelfSignedCertificates/client_with_ca_chain_certs",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestServerWithSelfSignedCertificates/client_without_ca_certs",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestUpdateRunnerScaleSet/UpdateRunnerScaleSet_calls_correct_url",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestUpdateRunnerScaleSet/Update_runner_scale_set",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithLogger/WithLogger(customLogger)_assigns_the_provided_logger",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithLogger/WithLogger(customLogger)_propagates_custom_logger_to_retryable_HTTP_client",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithLogger/WithLogger(nil)_propagates_discard_logger_to_retryable_HTTP_client",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithLogger/WithLogger(nil)_sets_a_discard_logger_on_raw_httpClientOption",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithRetryableHTTPClient/respects_custom_client's_retry_configuration_over_built-in_defaults",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithRetryableHTTPClient/uses_custom_retryable_client_instead_of_built-in",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificate/allows_multiple_certificates",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificate/applies_client_certificate_to_transport",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificateFromFile/loads_certificate_from_files",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificateFromFile/returns_error_for_invalid_certificate",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "common_client_test.go",
+      "test": "TestWithTLSClientCertificateFromFile/returns_error_for_non-existent_files",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    }
+  ]
+}

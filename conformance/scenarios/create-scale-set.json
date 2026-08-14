@@ -1,0 +1,6 @@
+{
+  "name": "client › create scale set with default label",
+  "operation": "createRunnerScaleSet",
+  "input": { "name": "scale" },
+  "actionsResponses": [{ "body": { "id": 4, "name": "scale" } }]
+}

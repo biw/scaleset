@@ -1,0 +1,24 @@
+{
+  "name": "session › refresh an expired queue token once for concurrent polls",
+  "operation": "getMessageConcurrentRefresh",
+  "input": { "scaleSetId": 4, "owner": "owner", "lastMessageId": 0, "maxCapacity": 8 },
+  "actionsResponses": [
+    {
+      "body": {
+        "sessionId": "00000000-0000-0000-0000-000000000001",
+        "ownerName": "owner",
+        "messageQueueUrl": "<queue-url>",
+        "messageQueueAccessToken": "old-token"
+      }
+    },
+    {
+      "body": {
+        "sessionId": "00000000-0000-0000-0000-000000000002",
+        "ownerName": "owner",
+        "messageQueueUrl": "<queue-url>",
+        "messageQueueAccessToken": "new-token"
+      }
+    }
+  ],
+  "queueResponses": [{ "status": 401 }, { "status": 401 }, { "status": 202 }, { "status": 202 }]
+}

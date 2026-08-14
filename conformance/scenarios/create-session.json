@@ -1,0 +1,15 @@
+{
+  "name": "session › create",
+  "operation": "createMessageSession",
+  "input": { "scaleSetId": 4, "owner": "owner" },
+  "actionsResponses": [
+    {
+      "body": {
+        "sessionId": "00000000-0000-0000-0000-000000000001",
+        "ownerName": "owner",
+        "messageQueueUrl": "<queue-url>",
+        "messageQueueAccessToken": "queue-token"
+      }
+    }
+  ]
+}

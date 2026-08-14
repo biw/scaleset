@@ -1,0 +1,16 @@
+{
+  "name": "list-runner-scale-sets",
+  "operation": "listRunnerScaleSets",
+  "input": { "runnerGroupId": 7 },
+  "actionsResponses": [
+    {
+      "body": {
+        "count": 2,
+        "value": [
+          { "id": 1, "name": "alpha", "runnerGroupId": 7 },
+          { "id": 2, "name": "beta", "runnerGroupId": 7 }
+        ]
+      }
+    }
+  ]
+}

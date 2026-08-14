@@ -1,0 +1,4 @@
+{
+  "name": "client › reject an empty personal access token during construction",
+  "operation": "constructorValidation"
+}

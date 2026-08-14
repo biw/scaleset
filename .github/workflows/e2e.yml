@@ -1,0 +1,57 @@
+name: Protected E2E
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}
+  # The provider's finally block removes its scale set; do not interrupt it.
+  cancel-in-progress: false
+
+jobs:
+  environment:
+    uses: ./.github/workflows/release-environment.yml
+    with:
+      protected-environment: e2e
+      admin-environment: e2e-admin
+
+  e2e:
+    needs: environment
+    name: Run live scale-set providers
+    runs-on: ubuntu-latest
+    environment: ${{ needs.environment.outputs.environment }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: actions-scaleset/go.mod
+          cache: true
+          cache-dependency-path: actions-scaleset/go.sum
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:e2e
+        env:
+          E2E_SCALESET_URL: ${{ format('https://github.com/{0}', github.repository) }}
+          E2E_SCALESET_NAME: scaleset-e2e-${{ github.run_id }}
+          E2E_SCALESET_RUNNER_GROUP: default
+          E2E_SCALESET_MIN_RUNNERS: "0"
+          E2E_SCALESET_MAX_RUNNERS: "1"
+          E2E_SCALESET_GITHUB_TOKEN: ${{ secrets.E2E_GITHUB_TOKEN }}
+          E2E_WORKFLOW_TARGET_ORG: ${{ github.repository_owner }}
+          E2E_WORKFLOW_TARGET_REPO: ${{ github.event.repository.name }}
+          E2E_WORKFLOW_TARGET_FILE: e2e-target.yml
+          E2E_WORKFLOW_GITHUB_TOKEN: ${{ secrets.E2E_GITHUB_TOKEN }}

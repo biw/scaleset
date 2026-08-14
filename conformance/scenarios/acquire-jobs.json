@@ -1,0 +1,16 @@
+{
+  "name": "session › acquire jobs",
+  "operation": "acquireJobs",
+  "input": { "scaleSetId": 4, "owner": "owner", "requestIds": [7, 8] },
+  "actionsResponses": [
+    {
+      "body": {
+        "sessionId": "00000000-0000-0000-0000-000000000001",
+        "ownerName": "owner",
+        "messageQueueUrl": "<queue-url>",
+        "messageQueueAccessToken": "queue-token"
+      }
+    },
+    { "body": { "count": 2, "value": [7, 8] } }
+  ]
+}

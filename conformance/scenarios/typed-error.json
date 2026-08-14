@@ -1,0 +1,12 @@
+{
+  "name": "errors › preserve runner-not-found classification",
+  "operation": "getRunner",
+  "input": { "id": 7 },
+  "actionsResponses": [
+    {
+      "status": 404,
+      "headers": { "ActivityId": "activity", "X-GitHub-Request-Id": "request" },
+      "body": { "typeName": "AgentNotFoundException", "message": "missing" }
+    }
+  ]
+}

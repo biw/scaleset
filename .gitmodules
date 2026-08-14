@@ -1,0 +1,3 @@
+[submodule "actions-scaleset"]
+	path = actions-scaleset
+	url = https://github.com/actions/scaleset.git
