@@ -1,6 +1,6 @@
 {
   "name": "scaleset",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript client for GitHub Actions Runner Scale Set APIs",
   "license": "MIT",
   "repository": {
