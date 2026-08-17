@@ -7,28 +7,19 @@ on:
 permissions:
   contents: read
   id-token: write
-  pull-requests: read
 
 concurrency:
   group: npm-publish-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
-  environment:
-    uses: ./.github/workflows/release-environment.yml
-    with:
-      protected-environment: npm
-      admin-environment: npm-admin
-      allow-admin-actor-without-pr: true
-
   publish:
-    needs: environment
     name: Verify and publish ${{ github.ref_name }}
     runs-on: ubuntu-latest
-    environment: ${{ needs.environment.outputs.environment }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           submodules: recursive
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
@@ -46,5 +37,20 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm audit:dependencies
       - run: pnpm check
-      - run: test "v$(node -p \"require('./package.json').version\")" = "$GITHUB_REF_NAME"
+      - name: Verify release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          expected_tag="v$(node -p 'require("./package.json").version')"
+          if [[ "$GITHUB_REF_NAME" != "$expected_tag" ]]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package version ${expected_tag}."
+            exit 1
+          fi
+
+          git fetch --no-tags origin "+refs/heads/main:refs/remotes/origin/main"
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::Release tag ${GITHUB_REF_NAME} does not point to a commit on main."
+            exit 1
+          fi
       - run: npm publish

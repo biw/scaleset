@@ -1,9 +1,9 @@
 # Contributing
 
 `scaleset` is a public preview published to npm. Package publication is limited
-to the protected `npm` environment and its tag-triggered trusted-publishing
-workflow. Never add an npm access token, `.npmrc` credential, or registry
-credential to the repository, a workflow, or a local fixture.
+to admin-created release tags through its trusted-publishing workflow. Never
+add an npm access token, `.npmrc` credential, or registry credential to the
+repository, a workflow, or a local fixture.
 
 ## Package boundaries
 
@@ -63,12 +63,12 @@ an E2E failure optional.
 1. Update the version, `CHANGELOG.md`, API documentation, and compatibility
    notes in a reviewed change on `main`.
 2. Wait for the Node 24 verification job to pass.
-3. Create and push the exact `v<package-version>` tag from that `main` commit.
-4. The publish workflow applies the same policy: an admin author of an
-   associated merged pull request, or an admin who directly triggers the tag
-   workflow, uses unreviewed `npm-admin`. All other tags use approval-gated
-   `npm`. It repeats all quality gates, verifies the tag/version match, and
-   publishes with npm OIDC trusted publishing and provenance.
+3. An administrator creates and pushes the exact `v<package-version>` tag from
+   that `main` commit. The release-tag ruleset prevents other roles from
+   creating, moving, or deleting `v*` tags.
+4. The publish workflow repeats all quality gates, verifies that the tag
+   matches the package version and points to a commit on `main`, then publishes
+   with npm OIDC trusted publishing and provenance.
 5. Verify the package page, provenance, tarball contents, and clean consumer
    install before announcing the release.
 
