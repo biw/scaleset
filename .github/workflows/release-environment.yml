@@ -9,6 +9,11 @@ on:
       admin-environment:
         required: true
         type: string
+      allow-admin-actor-without-pr:
+        description: Allow an admin who directly triggered the workflow to use the admin environment.
+        required: false
+        type: boolean
+        default: false
     outputs:
       environment:
         description: Environment selected for the caller.
@@ -23,7 +28,7 @@ permissions:
 
 jobs:
   resolve:
-    name: Resolve merged PR author
+    name: Select protected environment
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.select.outputs.environment }}
@@ -35,7 +40,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PROTECTED_ENVIRONMENT: ${{ inputs.protected-environment }}
           ADMIN_ENVIRONMENT: ${{ inputs.admin-environment }}
+          ALLOW_ADMIN_ACTOR_WITHOUT_PR: ${{ inputs.allow-admin-actor-without-pr }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          TRIGGERING_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
 
@@ -58,6 +65,17 @@ jobs:
               reason="admin-author-of-merged-pull-request-${pr_number}"
             else
               reason="non-admin-author-of-merged-pull-request-${pr_number}"
+            fi
+          elif [[ "$ALLOW_ADMIN_ACTOR_WITHOUT_PR" == "true" ]]; then
+            permission="$(
+              gh api "repos/${GITHUB_REPOSITORY}/collaborators/${TRIGGERING_ACTOR}/permission" \
+                --jq '.permission' 2>/dev/null || true
+            )"
+            if [[ "$permission" == "admin" ]]; then
+              environment="$ADMIN_ENVIRONMENT"
+              reason="admin-triggering-actor-${TRIGGERING_ACTOR}"
+            else
+              reason="non-admin-triggering-actor-${TRIGGERING_ACTOR}"
             fi
           fi
 

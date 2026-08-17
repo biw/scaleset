@@ -49,10 +49,12 @@ advisories. CI tests Node 24 and runs the same gate.
 The live runner E2E suite is not a pull-request check. It runs only on `main`
 pushes or manual dispatches. The workflow resolves the merged pull request
 associated with the triggering commit: a current repository admin author uses
-the unreviewed `e2e-admin` environment; every other case uses approval-gated
-`e2e`. Direct pushes, lookup failures, and commits with no associated merged
-pull request always fail closed to `e2e`. Its fine-grained GitHub token and
-target settings must remain environment-scoped. Do not use
+the unreviewed `e2e-admin` environment. A direct push or manual dispatch also
+uses `e2e-admin` when GitHub reports that the authenticated triggering actor is
+a current repository admin. Non-admin authors and actors, permission lookup
+failures, and other unmatched cases fail closed to approval-gated `e2e`. Git
+commit author metadata is never trusted for this decision. Its fine-grained
+GitHub token and target settings must remain environment-scoped. Do not use
 `pull_request_target`, pass those values to an untrusted pull request, or make
 an E2E failure optional.
 
@@ -62,10 +64,11 @@ an E2E failure optional.
    notes in a reviewed change on `main`.
 2. Wait for the Node 24 verification job to pass.
 3. Create and push the exact `v<package-version>` tag from that `main` commit.
-4. The publish workflow applies the same associated-PR author policy: an admin
-   author uses unreviewed `npm-admin`; all other tags use approval-gated `npm`.
-   It repeats all quality gates, verifies the tag/version match, and publishes
-   with npm OIDC trusted publishing and provenance.
+4. The publish workflow applies the same policy: an admin author of an
+   associated merged pull request, or an admin who directly triggers the tag
+   workflow, uses unreviewed `npm-admin`. All other tags use approval-gated
+   `npm`. It repeats all quality gates, verifies the tag/version match, and
+   publishes with npm OIDC trusted publishing and provenance.
 5. Verify the package page, provenance, tarball contents, and clean consumer
    install before announcing the release.
 

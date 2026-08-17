@@ -19,6 +19,7 @@ jobs:
     with:
       protected-environment: npm
       admin-environment: npm-admin
+      allow-admin-actor-without-pr: true
 
   publish:
     needs: environment

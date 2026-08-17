@@ -20,6 +20,7 @@ jobs:
     with:
       protected-environment: e2e
       admin-environment: e2e-admin
+      allow-admin-actor-without-pr: true
 
   e2e:
     needs: environment
