@@ -46,6 +46,7 @@
   },
   "scripts": {
     "build": "vp pack",
+    "prepublish": "pnpm build",
     "check": "vp check && pnpm test && pnpm test:coverage && pnpm test:package",
     "format": "vp fmt . --write",
     "format:check": "vp fmt --check .",

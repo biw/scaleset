@@ -16,11 +16,43 @@ concurrency:
 
 jobs:
   environment:
-    uses: ./.github/workflows/release-environment.yml
-    with:
-      protected-environment: e2e
-      admin-environment: e2e-admin
-      allow-admin-actor-without-pr: true
+    name: Select protected environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.select.outputs.environment }}
+    steps:
+      - id: select
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          TRIGGERING_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+
+          environment="e2e"
+          pr_author=""
+          pr_data="$(
+            gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls?per_page=100" \
+              --jq "[.[] | select(.merged_at != null and .base.ref == \"${BASE_BRANCH}\")][0] | select(.) | .user.login" \
+              2>/dev/null || true
+          )"
+
+          if [[ -n "$pr_data" ]]; then
+            pr_author="$pr_data"
+          fi
+
+          admin_candidate="${pr_author:-$TRIGGERING_ACTOR}"
+          permission="$(
+            gh api "repos/${GITHUB_REPOSITORY}/collaborators/${admin_candidate}/permission" \
+              --jq '.permission' 2>/dev/null || true
+          )"
+          if [[ "$permission" == "admin" ]]; then
+            environment="e2e-admin"
+          fi
+
+          echo "Selected ${environment} for ${admin_candidate}."
+          echo "environment=${environment}" >>"$GITHUB_OUTPUT"
 
   e2e:
     needs: environment

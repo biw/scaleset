@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    uses: biw/npm-trusted-publish-workflows/.github/workflows/check.yml@8fcdd1fa42935c6cc16d29db60d29789affb15b2 # v1.0.0
+
+  ci:
+    needs: check
+    if: needs.check.outputs.should_publish == 'true'
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: ci
+    permissions:
+      contents: write
+      id-token: write
+    uses: biw/npm-trusted-publish-workflows/.github/workflows/publish.yml@8fcdd1fa42935c6cc16d29db60d29789affb15b2 # v1.0.0
