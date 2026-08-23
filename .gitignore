@@ -7,3 +7,5 @@ coverage/
 .env.*
 !.env.example
 .conductor/*.log
+.agents/skills/
+.claude/skills/
