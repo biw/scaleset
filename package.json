@@ -51,7 +51,7 @@
     "format": "vp fmt . --write",
     "format:check": "vp fmt --check .",
     "lint": "vp lint .",
-    "prepare": "pnpm setup:submodules",
+    "prepare": "pnpm setup:submodules && pnpx skills experimental_install",
     "test": "pnpm setup:conformance && vp test run",
     "test:coverage": "pnpm setup:conformance && CI=false vp test run --coverage",
     "test:e2e": "pnpm setup:conformance && RUN_SCALESET_E2E=true vp test run tests/upstream-parity.test.ts tests/typescript-e2e.test.ts",
