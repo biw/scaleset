@@ -1,7 +1,7 @@
 # TypeScript GitHub Actions Runner Scale Set Client
 
-> Status: **Public preview** – `scaleset` 0.1.0 tracks
-> [`actions/scaleset` main at `cb0405b`](https://github.com/actions/scaleset/tree/cb0405b2d874500e75ae34eff8d582ab75956b45).
+> Status: **Public preview** – this branch tracks
+> [`actions/scaleset` main at `fb56300`](https://github.com/actions/scaleset/tree/fb56300503fd21caa788feeb85c63071d15155c6).
 > It is an ESM-only package for Node.js 24+ and standards-compatible runtimes.
 
 `scaleset` is a standalone TypeScript client for the GitHub Actions **Runner
@@ -39,7 +39,7 @@ then removed, giving each job a clean environment.
    or a custom token provider.
 2. Look up a runner group and create a runner scale set.
 3. Create a message session and pass it to `ScaleSetListener`.
-4. In your scaler callbacks, use the desired capacity to provision your
+4. In your scaler's `scale` handler, use the desired capacity to provision your
    processes, containers, VMs, or another runner implementation.
 5. Generate a JIT configuration for each runner as needed, then start it.
 
@@ -64,7 +64,7 @@ Report your scale set's maximum capacity with `maxRunners`. The listener passes
 it to the message API as the `X-ScaleSetMaxCapacity` header, allowing GitHub to
 avoid assigning more work than the provider can fulfill.
 
-`JobStarted` and `JobCompleted` callbacks are still useful for provider state,
+`JobStarted` and `JobCompleted` messages are still useful for provider state,
 metrics, and safe runner cleanup. They are lifecycle signals, not the scaling
 source of truth.
 
@@ -78,22 +78,74 @@ immediately when one is available; otherwise, the service waits for up to about
 again immediately after every response.
 
 `ScaleSetListener` preserves the observable behavior of the upstream Go
-listener: it initializes desired capacity from session statistics, refreshes it
-after an empty poll, tracks the latest message cursor, acknowledges a received
-message, acquires available jobs, emits lifecycle callbacks, and then emits
-desired capacity.
+listener: it sends a synthetic initial message containing the session
+statistics, passes every poll result to the scaler, tracks the latest message
+cursor, and acknowledges a real message only after the scaler succeeds.
+
+The scaler receives `undefined` after an empty poll. The listener does not cache
+statistics, acquire available jobs, or interpret lifecycle messages. Cache the
+last statistics yourself if you want to keep reconciling during idle polls, and
+call `session.acquireJobs()` for every available job you want assigned.
 
 ### Message acknowledgment
 
-`deleteMessage()` acknowledges a received message. An unacknowledged message
-can be redelivered on the next poll, preventing message loss when a provider
-stops mid-processing.
+`deleteMessage()` acknowledges a received message. `ScaleSetListener` calls it
+only after `scale()` returns successfully. If `scale()` throws, the listener
+stops without acknowledging the message so it can be redelivered. Handlers
+should be idempotent because any partial work completed before an error can run
+again.
 
 ### Message ID tracking
 
 Pass the ID of the last processed message to `getMessage()`. Passing `0` (or
 omitting a previous ID) reads the first available message and can cause
 reprocessing.
+
+### Durable and resumable polling
+
+Use `ResumableScaleSetListener` when the process cannot keep its cursor and
+latest statistics only in memory. Its checkpoint is JSON-serializable, each
+`poll()` call performs at most one long poll, and a delivery is acknowledged
+only when the caller explicitly asks for it.
+
+```ts
+import { ResumableScaleSetListener, type ScaleSetCheckpoint } from "scaleset";
+
+const listener = new ResumableScaleSetListener(session);
+let checkpoint: ScaleSetCheckpoint = (await loadCheckpoint()) ?? listener.initialCheckpoint();
+
+const result = await listener.poll(checkpoint, { maxRunners: 10, signal });
+if (result.kind === "idle") {
+  await persistDesiredRunnerCount(result.desiredRunnerCount);
+} else {
+  // Persist demand and every JobAssigned/JobStarted/JobCompleted record before
+  // acknowledging so a restart can safely replay partial work.
+  await persistDelivery(result.desiredRunnerCount, result.message);
+
+  const selected = result.message.jobAvailableMessages.map((job) => job.runnerRequestId);
+  const acquired = await result.acquire(selected);
+  await persistAcquiredAssignments(acquired);
+
+  checkpoint = await result.acknowledge();
+  await persistCheckpoint(checkpoint);
+}
+```
+
+The durable sequence is:
+
+1. Poll for one delivery.
+2. Persist desired demand and assigned lifecycle records.
+3. Select and acquire any subset of the available jobs.
+4. Persist the request IDs GitHub actually acquired.
+5. Acknowledge the delivery.
+6. Persist the checkpoint returned by `acknowledge()`.
+
+An empty poll returns the unchanged cursor and last authoritative statistics.
+Desired capacity always comes from `statistics.totalAssignedJobs`, never from
+the number of lifecycle records. If statistics are missing or invalid, polling
+fails before acknowledgement and the saved checkpoint remains unchanged. All
+persistence, retry, provisioning, and capacity policy remains the consumer's
+responsibility.
 
 ### Job reassignment
 
@@ -138,15 +190,27 @@ const listener = new ScaleSetListener(session, {
 });
 
 await listener.run({
-  async handleDesiredRunnerCount(desired) {
-    // Create or remove runners until the provider reaches `desired`.
-    return desired;
-  },
-  handleJobStarted(job) {
-    // Record that job.runnerName is busy.
-  },
-  handleJobCompleted(job) {
-    // Record completion and safely clean up an ephemeral runner.
+  async scale(message, { signal } = {}) {
+    // An empty long poll has no new state. Cache statistics here if your
+    // provider should continue reconciling during idle polls.
+    if (!message) return;
+
+    if (message.jobAvailableMessages.length > 0) {
+      await session.acquireJobs(
+        message.jobAvailableMessages.map((job) => job.runnerRequestId),
+        { signal },
+      );
+    }
+    for (const job of message.jobStartedMessages) {
+      // Record that job.runnerName is busy.
+    }
+    for (const job of message.jobCompletedMessages) {
+      // Record completion and safely clean up an ephemeral runner.
+    }
+    if (message.statistics) {
+      const desired = message.statistics.totalAssignedJobs;
+      // Create or remove runners until the provider reaches `desired`.
+    }
   },
 });
 ```
@@ -196,7 +260,7 @@ the GitHub registration and Actions-service tokens it needs, refreshing them
 before expiry.
 
 ```ts
-import { githubApp, personalAccessToken, tokenProvider } from "scaleset";
+import { githubApp, githubAppJwtProvider, personalAccessToken, tokenProvider } from "scaleset";
 
 const appCredential = githubApp({
   clientId: process.env.GITHUB_APP_CLIENT_ID!,
@@ -211,10 +275,23 @@ const externalCredential = tokenProvider({
     return process.env.GITHUB_TOKEN!; // Or fetch a short-lived token from your service.
   },
 });
+
+const kmsCredential = githubAppJwtProvider({
+  installationId: Number(process.env.GITHUB_APP_INSTALLATION_ID),
+  jwtProvider: {
+    async getJwt(signal) {
+      // Return an RS256 GitHub App JWT signed by your KMS/HSM integration.
+      return signGitHubAppJwtWithKms({ signal });
+    },
+  },
+});
 ```
 
 GitHub App JWT signing uses Web Crypto and accepts both PKCS#8 (`PRIVATE KEY`)
 and traditional PKCS#1 (`RSA PRIVATE KEY`) PEM files, matching the Go client.
+`githubAppJwtProvider()` keeps raw private key material outside this process and
+exchanges the provider's signed JWT for the installation access token. In
+contrast, `tokenProvider()` supplies a GitHub token directly.
 A PAT is simpler but normally has a broader security footprint; rotate it and
 grant only the permissions required by your runner scope. See the [GitHub
 authentication guidance](https://docs.github.com/en/actions/tutorials/use-actions-runner-controller/authenticate-to-the-api)
@@ -231,6 +308,7 @@ to your GHES documentation before relying on those capabilities.
 
 - Prefer GitHub App credentials over PATs and never log credentials, message
   queue access tokens, or JIT configuration values.
+- Use `githubAppJwtProvider()` when the App key must remain in a KMS or HSM.
 - Treat JIT configurations as secrets until the runner consumes them.
 - npm releases are published only by the protected, tag-triggered workflow with
   npm trusted publishing; no npm token is stored in this repository or its CI.

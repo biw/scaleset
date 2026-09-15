@@ -79,9 +79,20 @@ try {
   console.log("SCALESET_TYPESCRIPT_PROVIDER_READY");
   await listener.run(
     {
-      handleDesiredRunnerCount: scaleTo,
-      handleJobStarted,
-      handleJobCompleted,
+      async scale(message, options) {
+        if (!message) return;
+        if (!session) throw new Error("message session is not initialized");
+
+        if (message.jobAvailableMessages.length > 0) {
+          await session.acquireJobs(
+            message.jobAvailableMessages.map((job) => job.runnerRequestId),
+            options,
+          );
+        }
+        for (const job of message.jobStartedMessages) handleJobStarted(job);
+        for (const job of message.jobCompletedMessages) await handleJobCompleted(job);
+        if (message.statistics) await scaleTo(message.statistics.totalAssignedJobs);
+      },
     },
     shutdown.signal,
   );

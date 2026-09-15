@@ -1,4 +1,4 @@
-import type { TokenProvider } from "./types.js";
+import type { JwtProvider, TokenProvider } from "./types.js";
 
 export interface PersonalAccessTokenCredential {
   type: "personal-access-token";
@@ -17,9 +17,16 @@ export interface TokenProviderCredential {
   tokenProvider: TokenProvider;
 }
 
+export interface GitHubAppJwtProviderCredential {
+  type: "github-app-jwt-provider";
+  installationId: number;
+  jwtProvider: JwtProvider;
+}
+
 export type Credential =
   | PersonalAccessTokenCredential
   | GitHubAppCredential
+  | GitHubAppJwtProviderCredential
   | TokenProviderCredential;
 
 export function personalAccessToken(token: string): PersonalAccessTokenCredential {
@@ -42,6 +49,23 @@ export function tokenProvider(tokenProvider: TokenProvider): TokenProviderCreden
 }
 
 /**
+ * Authenticate as a GitHub App using a caller-provided JWT signer.
+ *
+ * This is the KMS/HSM-friendly counterpart to {@link githubApp}: the provider
+ * returns an already signed GitHub App JWT and this client exchanges it for an
+ * installation access token.
+ */
+export function githubAppJwtProvider(
+  credential: Omit<GitHubAppJwtProviderCredential, "type">,
+): GitHubAppJwtProviderCredential {
+  if (!credential.installationId) throw new Error("GitHub App installation ID is required");
+  if (!credential.jwtProvider || typeof credential.jwtProvider.getJwt !== "function") {
+    throw new Error("JWT provider with getJwt is required");
+  }
+  return { type: "github-app-jwt-provider", ...credential };
+}
+
+/**
  * Validate credentials supplied directly to the client constructor.
  *
  * The helpers above make invalid credentials difficult to construct, but this
@@ -58,6 +82,19 @@ export function validateCredential(credential: Credential): void {
       if (!credential.clientId) throw new Error("client ID is required");
       if (!credential.installationId) throw new Error("app installation ID is required");
       if (!credential.privateKey) throw new Error("app private key is required");
+      try {
+        pemToBytes(credential.privateKey);
+      } catch (error) {
+        throw new Error(`failed to parse RSA private key from PEM: ${(error as Error).message}`, {
+          cause: error,
+        });
+      }
+      return;
+    case "github-app-jwt-provider":
+      if (!credential.installationId) throw new Error("app installation ID is required");
+      if (!credential.jwtProvider || typeof credential.jwtProvider.getJwt !== "function") {
+        throw new Error("JWT provider with getJwt is required");
+      }
       return;
     case "token-provider":
       if (!credential.tokenProvider || typeof credential.tokenProvider.getToken !== "function") {

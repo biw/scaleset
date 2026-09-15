@@ -446,7 +446,10 @@ export class ScaleSetClient {
     if (this.#credential.type === "token-provider")
       return this.#credential.tokenProvider.getToken(signal);
 
-    const jwt = await createGitHubAppJwt(this.#credential, this.#clock());
+    const jwt =
+      this.#credential.type === "github-app"
+        ? await createGitHubAppJwt(this.#credential, this.#clock())
+        : await this.#credential.jwtProvider.getJwt(signal);
     const request = new Request(
       githubApiUrl(
         this.#config,

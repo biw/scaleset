@@ -31,7 +31,7 @@ try {
     [
       "--input-type=module",
       "--eval",
-      'const core = await import("scaleset"); const node = await import("scaleset/node"); if (typeof core.ScaleSetClient !== "function" || typeof node.createNodeFetch !== "function") throw new Error("package exports are incomplete"); const fetch = node.createNodeFetch(); await fetch.close();',
+      'const core = await import("scaleset"); const node = await import("scaleset/node"); if (typeof core.ScaleSetClient !== "function" || typeof core.ResumableScaleSetListener !== "function" || typeof core.githubAppJwtProvider !== "function" || core.INITIAL_MESSAGE_ID !== -1 || typeof node.createNodeFetch !== "function") throw new Error("package exports are incomplete"); const fetch = node.createNodeFetch(); await fetch.close();',
     ],
     { cwd: consumer },
   );

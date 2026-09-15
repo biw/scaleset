@@ -5,6 +5,7 @@ import {
   RequestError,
   createGitHubAppJwt,
   githubApp,
+  githubAppJwtProvider,
   isScaleSetError,
   personalAccessToken,
   type FetchLike,
@@ -78,6 +79,49 @@ describe("ScaleSetClient", () => {
           credential: { type: "github-app", clientId: "1", installationId: 1, privateKey: "" },
         }),
     ).toThrow("invalid credentials: app private key is required");
+    expect(
+      () =>
+        new ScaleSetClient({
+          ...options,
+          credential: {
+            type: "github-app",
+            clientId: "1",
+            installationId: 1,
+            privateKey: "not a private key",
+          },
+        }),
+    ).toThrow("invalid credentials: failed to parse RSA private key from PEM");
+    expect(
+      () =>
+        new ScaleSetClient({
+          ...options,
+          credential: {
+            type: "github-app-jwt-provider",
+            installationId: 0,
+            jwtProvider: { getJwt: async () => "jwt" },
+          },
+        }),
+    ).toThrow("invalid credentials: app installation ID is required");
+    expect(() =>
+      githubAppJwtProvider({ installationId: 42, jwtProvider: undefined as never }),
+    ).toThrow("JWT provider with getJwt is required");
+    expect(() =>
+      githubAppJwtProvider({
+        installationId: 0,
+        jwtProvider: { getJwt: async () => "jwt" },
+      }),
+    ).toThrow("GitHub App installation ID is required");
+    expect(
+      () =>
+        new ScaleSetClient({
+          ...options,
+          credential: {
+            type: "github-app-jwt-provider",
+            installationId: 42,
+            jwtProvider: {} as never,
+          },
+        }),
+    ).toThrow("invalid credentials: JWT provider with getJwt is required");
   });
 
   it("adds labels when creating a scale set", async () => {
@@ -118,6 +162,69 @@ describe("ScaleSetClient", () => {
 
     await Promise.all([client.getRunner(1), client.getRunner(2)]);
     expect(provided).toBe(1);
+  });
+
+  it("uses a custom GitHub App JWT provider without loading a private key", async () => {
+    const requests: Request[] = [];
+    const signals: Array<AbortSignal | undefined> = [];
+    const controller = new AbortController();
+    const client = new ScaleSetClient({
+      githubConfigUrl: "https://github.example/org",
+      credential: githubAppJwtProvider({
+        installationId: 42,
+        jwtProvider: {
+          getJwt(signal) {
+            signals.push(signal);
+            return "kms-signed-jwt";
+          },
+        },
+      }),
+      fetch: async (input) => {
+        const request = new Request(input);
+        requests.push(request);
+        const path = new URL(request.url).pathname;
+        if (path.endsWith("/app/installations/42/access_tokens")) {
+          return json({ token: "installation-token", expires_at: "2099-01-01T00:00:00Z" }, 201);
+        }
+        if (path.endsWith("registration-token")) return json({ token: "registration" }, 201);
+        if (path.endsWith("runner-registration")) {
+          return json({ url: "https://actions.example/", token: adminToken }, 201);
+        }
+        return json({ id: 1, name: "runner" });
+      },
+    });
+
+    await expect(client.getRunner(1, { signal: controller.signal })).resolves.toMatchObject({
+      id: 1,
+    });
+    expect(requests[0]!.headers.get("authorization")).toBe("Bearer kms-signed-jwt");
+    expect(requests.map((request) => new URL(request.url).pathname)).toEqual([
+      "/api/v3/app/installations/42/access_tokens",
+      "/api/v3/orgs/org/actions/runners/registration-token",
+      "/api/v3/actions/runner-registration",
+      "/_apis/distributedtask/pools/0/agents/1",
+    ]);
+    expect(signals).toEqual([controller.signal]);
+  });
+
+  it("propagates custom GitHub App JWT provider failures", async () => {
+    const providerError = new Error("KMS unavailable");
+    const client = new ScaleSetClient({
+      githubConfigUrl: "https://github.example/org",
+      credential: githubAppJwtProvider({
+        installationId: 42,
+        jwtProvider: {
+          async getJwt() {
+            throw providerError;
+          },
+        },
+      }),
+      fetch: async () => {
+        throw new Error("request should not be sent");
+      },
+    });
+
+    await expect(client.getRunner(1)).rejects.toBe(providerError);
   });
 
   it("covers scale-set, group, runner, and JIT API operations", async () => {
