@@ -1,7 +1,7 @@
 import { generateKeyPairSync, sign } from "node:crypto";
 import { createServer } from "node:net";
 import { createEmulator } from "emulate";
-import { expect, it } from "vite-plus/test";
+import { expect, it } from "vitest";
 import { ScaleSetClient, githubAppJwtProvider, type FetchLike } from "../src/index.js";
 
 it("exchanges an externally signed GitHub App JWT against the GitHub emulator", async () => {

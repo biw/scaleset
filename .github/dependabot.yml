@@ -4,10 +4,6 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    ignore:
-      # Must match the Vitest version bundled by vite-plus.
-      - dependency-name: "@vitest/coverage-v8"
-        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

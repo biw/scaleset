@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import { runPinnedGoTests } from "../conformance/scripts/go-reference.js";
 
 const root = resolve(import.meta.dirname, "..");

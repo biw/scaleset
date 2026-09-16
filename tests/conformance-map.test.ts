@@ -1,4 +1,4 @@
-import { expect, it } from "vite-plus/test";
+import { expect, it } from "vitest";
 import { verifyReferenceMap } from "../conformance/scripts/check-test-map.js";
 
 it("maps every upstream Go Test function and nested subtest", async () => {

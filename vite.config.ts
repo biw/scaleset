@@ -102,6 +102,13 @@ export default defineConfig({
     },
     overrides: [
       {
+        files: ["tests/**/*.ts", "vitest.config.ts"],
+        rules: {
+          // Tests use the direct Vitest 5 dependency instead of Vite+'s bundled Vitest 4.
+          "vite-plus/prefer-vite-plus-imports": "off",
+        },
+      },
+      {
         files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
         rules: {
           "constructor-super": "off",
@@ -152,24 +159,6 @@ export default defineConfig({
       ".agents/",
       ".claude/",
     ],
-  },
-  test: {
-    // The two credential-backed provider E2E tests dispatch the same workflow.
-    // Running files serially keeps their workflow discovery unambiguous while
-    // retaining one coherent Vitest report for every suite.
-    fileParallelism: false,
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "json-summary", "lcov"],
-      include: ["src/**/*.ts"],
-      reportsDirectory: "coverage",
-      thresholds: {
-        statements: 80,
-        branches: 70,
-        functions: 80,
-        lines: 82,
-      },
-    },
   },
   pack: {
     entry: ["src/index.ts", "src/node.ts"],
