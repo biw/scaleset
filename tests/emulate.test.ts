@@ -157,7 +157,9 @@ async function availablePort(): Promise<number> {
   const server = createServer();
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
-    server.listen(0, "127.0.0.1", resolve);
+    // emulate listens on the wildcard address, so probe the same address family
+    // instead of selecting a port that may only be free on IPv4.
+    server.listen(0, resolve);
   });
   const address = server.address();
   if (!address || typeof address === "string") throw new Error("failed to allocate a test port");

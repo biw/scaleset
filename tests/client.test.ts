@@ -13,6 +13,9 @@ import {
 import { createNodeFetch } from "../src/node.js";
 
 const adminToken = `header.${base64Url(JSON.stringify({ exp: Math.floor(Date.now() / 1_000) + 3_600 }))}.signature`;
+const testAppPrivateKey = generateKeyPairSync("rsa", { modulusLength: 2_048 }).privateKey;
+const testAppPkcs8 = testAppPrivateKey.export({ type: "pkcs8", format: "pem" }).toString();
+const testAppPkcs1 = testAppPrivateKey.export({ type: "pkcs1", format: "pem" }).toString();
 
 describe("ScaleSetClient", () => {
   it("discovers the Actions service and issues scale-set requests", async () => {
@@ -331,10 +334,11 @@ describe("ScaleSetClient", () => {
   });
 
   it("creates Web Crypto compatible GitHub App JWTs", async () => {
-    const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
-      .privateKey.export({ type: "pkcs8", format: "pem" })
-      .toString();
-    const credential = githubApp({ clientId: "123", installationId: 456, privateKey: key });
+    const credential = githubApp({
+      clientId: "123",
+      installationId: 456,
+      privateKey: testAppPkcs8,
+    });
     const jwt = await createGitHubAppJwt(credential, new Date("2026-01-01T00:00:00Z"));
     const [, payload] = jwt.split(".");
     expect(JSON.parse(Buffer.from(payload!, "base64url").toString())).toMatchObject({
@@ -345,11 +349,8 @@ describe("ScaleSetClient", () => {
   });
 
   it("accepts traditional PKCS#1 GitHub App private keys", async () => {
-    const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
-      .privateKey.export({ type: "pkcs1", format: "pem" })
-      .toString();
     const jwt = await createGitHubAppJwt(
-      githubApp({ clientId: "123", installationId: 456, privateKey: key }),
+      githubApp({ clientId: "123", installationId: 456, privateKey: testAppPkcs1 }),
       new Date("2026-01-01T00:00:00Z"),
     );
     expect(jwt.split(".")).toHaveLength(3);
@@ -368,13 +369,14 @@ describe("ScaleSetClient", () => {
   });
 
   it("uses the injected clock for GitHub App authentication", async () => {
-    const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
-      .privateKey.export({ type: "pkcs8", format: "pem" })
-      .toString();
     let appJwt = "";
     const client = new ScaleSetClient({
       githubConfigUrl: "https://github.example/org",
-      credential: githubApp({ clientId: "123", installationId: 456, privateKey: key }),
+      credential: githubApp({
+        clientId: "123",
+        installationId: 456,
+        privateKey: testAppPkcs8,
+      }),
       clock: () => new Date("2026-01-01T00:00:00Z"),
       fetch: async (input) => {
         const request = new Request(input);
