@@ -18,7 +18,7 @@ import (
 	"github.com/actions/scaleset"
 )
 
-const adminToken = "eyJhbGciOiJub25lIn0.eyJleHAiOjE4OTM0NTYwMDB9.signature"
+const adminToken = "eyJhbGciOiJub25lIn0.eyJleHAiOjE4OTM0NTYwMDB9.c2lnbmF0dXJl"
 
 type response struct {
 	Status  int               `json:"status,omitempty"`
@@ -130,7 +130,7 @@ func main() {
 	client, err := scaleset.NewClientWithPersonalAccessToken(scaleset.NewClientWithPersonalAccessTokenConfig{
 		GitHubConfigURL:     server.URL + "/acme",
 		PersonalAccessToken: "reference-pat",
-		SystemInfo:          scaleset.SystemInfo{System: "reference", Version: "main@cb0405b", Subsystem: "conformance"},
+		SystemInfo:          scaleset.SystemInfo{System: "reference", Version: "main@fb56300", Subsystem: "conformance"},
 	})
 	must(err)
 	output.Result, err = run(context.Background(), client, input)

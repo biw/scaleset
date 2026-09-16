@@ -1,6 +1,6 @@
 {
   "name": "scaleset",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "TypeScript client for GitHub Actions Runner Scale Set APIs",
   "license": "MIT",
   "repository": {
@@ -72,16 +72,16 @@
     "typecheck": "vp check --no-fmt --no-lint"
   },
   "devDependencies": {
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.5.1",
     "@vitest/coverage-v8": "catalog:",
-    "tsx": "^4.23.12",
-    "turbo": "^2.10.10",
+    "emulate": "0.11.2",
+    "tsx": "^4.23.13",
+    "turbo": "^2.10.13",
     "typescript": "^7.0.2",
     "vite": "catalog:",
-    "vite-plus": "catalog:",
-    "vitest": "catalog:"
+    "vite-plus": "catalog:"
   },
   "dependencies": {
-    "undici": "^8.10.0"
+    "undici": "^8.10.2"
   }
 }

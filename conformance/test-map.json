@@ -1,8 +1,8 @@
 {
   "upstream": {
     "repository": "https://github.com/actions/scaleset",
-    "version": "main@cb0405b",
-    "commit": "cb0405b2d874500e75ae34eff8d582ab75956b45"
+    "version": "main@fb56300",
+    "commit": "fb56300503fd21caa788feeb85c63071d15155c6"
   },
   "tests": [
     {
@@ -20,6 +20,12 @@
     {
       "source": "client_test.go",
       "test": "TestNewClientWithGitHubApp",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithJWTProvider",
       "coverage": "native",
       "target": "tests/client.test.ts"
     },
@@ -159,6 +165,36 @@
       "source": "config_test.go",
       "test": "TestGitHubConfig_GitHubAPIURL",
       "coverage": "conformance",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviders",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestPEMJWTProviderInvalidPEM",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestSignerJWTProviderValidation",
+      "coverage": "deferred",
+      "reason": "Go's crypto.Signer adapter has no direct JavaScript equivalent; the portable TypeScript API accepts a custom JWT provider so KMS SDK integrations can sign with their native APIs."
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestSignerJWTProviderSigningError",
+      "coverage": "native",
+      "target": "tests/client.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviderFunc",
+      "coverage": "native",
       "target": "tests/client.test.ts"
     },
     {
@@ -675,6 +711,36 @@
       "target": "tests/go-subtests.test.ts"
     },
     {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviderFunc/propagates_errors",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviderFunc/rejects_a_nil_function",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviderFunc/returns_the_function_result",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviders/PEM_private_key",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestJWTProviders/crypto_signer",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
       "source": "listener/listener_test.go",
       "test": "TestListener_Run/call_handle_regardless_of_initial_message",
       "coverage": "reference",
@@ -683,6 +749,18 @@
     {
       "source": "listener/listener_test.go",
       "test": "TestListener_Run/cancel_context_after_get_message",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestListener_Run/message_is_acked_after_it_is_handled",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "listener/listener_test.go",
+      "test": "TestListener_Run/message_is_not_acked_when_scale_fails",
       "coverage": "reference",
       "target": "tests/go-subtests.test.ts"
     },
@@ -778,6 +856,12 @@
     },
     {
       "source": "client_test.go",
+      "test": "TestNewClientWithGitHubApp/returns_error_for_an_invalid_private_key",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
       "test": "TestNewClientWithGitHubApp/returns_error_for_missing_app_auth_fields",
       "coverage": "reference",
       "target": "tests/go-subtests.test.ts"
@@ -797,6 +881,30 @@
     {
       "source": "client_test.go",
       "test": "TestNewClientWithGitHubApp/returns_error_for_missing_app_auth_fields/missing_private_key",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithJWTProvider/full_flow_with_custom_JWT_provider",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithJWTProvider/nil_provider_returns_error",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithJWTProvider/provider_error_propagates",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "client_test.go",
+      "test": "TestNewClientWithJWTProvider/zero_installation_ID_returns_error",
       "coverage": "reference",
       "target": "tests/go-subtests.test.ts"
     },
@@ -917,6 +1025,30 @@
     {
       "source": "client_test.go",
       "test": "TestServerWithSelfSignedCertificates/client_without_ca_certs",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestSignerJWTProviderValidation/missing_client_ID",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestSignerJWTProviderValidation/missing_signer",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestSignerJWTProviderValidation/nil_provider",
+      "coverage": "reference",
+      "target": "tests/go-subtests.test.ts"
+    },
+    {
+      "source": "jwt_provider_test.go",
+      "test": "TestSignerJWTProviderValidation/non-RSA_signer",
       "coverage": "reference",
       "target": "tests/go-subtests.test.ts"
     },

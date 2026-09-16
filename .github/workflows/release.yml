@@ -6,7 +6,7 @@ on:
 
 jobs:
   check:
-    uses: biw/npm-trusted-publish-workflows/.github/workflows/check.yml@8fcdd1fa42935c6cc16d29db60d29789affb15b2 # v1.0.0
+    uses: biw/npm-trusted-publish-workflows/.github/workflows/check.yml@15d9817c4918e1d26b9c1b36fc8a975a15e2c62a # v1.0.1
 
   ci:
     needs: check
@@ -18,4 +18,4 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    uses: biw/npm-trusted-publish-workflows/.github/workflows/publish.yml@8fcdd1fa42935c6cc16d29db60d29789affb15b2 # v1.0.0
+    uses: biw/npm-trusted-publish-workflows/.github/workflows/publish.yml@15d9817c4918e1d26b9c1b36fc8a975a15e2c62a # v1.0.1

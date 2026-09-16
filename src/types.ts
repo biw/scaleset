@@ -172,3 +172,15 @@ export type Clock = () => Date;
 export interface TokenProvider {
   getToken(signal?: AbortSignal): Promise<string>;
 }
+
+/**
+ * Supplies a short-lived, signed JWT for GitHub App authentication.
+ *
+ * Implementations may delegate signing to a KMS, HSM, or another external
+ * service so private key material never enters this process. The returned JWT
+ * must use RS256 and include the GitHub App client ID in `iss` plus valid `iat`
+ * and `exp` claims.
+ */
+export interface JwtProvider {
+  getJwt(signal?: AbortSignal): Promise<string> | string;
+}

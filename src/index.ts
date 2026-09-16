@@ -1,11 +1,13 @@
 export {
   createGitHubAppJwt,
   githubApp,
+  githubAppJwtProvider,
   personalAccessToken,
   tokenProvider,
   validateCredential,
   type Credential,
   type GitHubAppCredential,
+  type GitHubAppJwtProviderCredential,
   type PersonalAccessTokenCredential,
   type TokenProviderCredential,
 } from "./auth.js";
@@ -25,10 +27,16 @@ export {
   type HttpStatusErrorCode,
 } from "./errors.js";
 export {
+  INITIAL_MESSAGE_ID,
+  ResumableScaleSetListener,
   ScaleSetListener,
+  type IdleScaleSetPollResult,
   type ListenerClient,
-  type MetricsRecorder,
+  type MessageScaleSetPollResult,
+  type ScaleSetCheckpoint,
   type ScaleSetListenerOptions,
+  type ScaleSetPollOptions,
+  type ScaleSetPollResult,
   type ScaleSetScaler,
 } from "./listener.js";
 export { MessageSessionClient, parseRunnerScaleSetMessage } from "./session.js";
@@ -42,6 +50,7 @@ export {
   type JobCompleted,
   type JobMessageBase,
   type JobStarted,
+  type JwtProvider,
   type Label,
   type Logger,
   type MessageType,

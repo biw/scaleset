@@ -5,6 +5,7 @@ import {
   RequestError,
   createGitHubAppJwt,
   githubApp,
+  githubAppJwtProvider,
   isScaleSetError,
   personalAccessToken,
   type FetchLike,
@@ -12,6 +13,9 @@ import {
 import { createNodeFetch } from "../src/node.js";
 
 const adminToken = `header.${base64Url(JSON.stringify({ exp: Math.floor(Date.now() / 1_000) + 3_600 }))}.signature`;
+const testAppPrivateKey = generateKeyPairSync("rsa", { modulusLength: 2_048 }).privateKey;
+const testAppPkcs8 = testAppPrivateKey.export({ type: "pkcs8", format: "pem" }).toString();
+const testAppPkcs1 = testAppPrivateKey.export({ type: "pkcs1", format: "pem" }).toString();
 
 describe("ScaleSetClient", () => {
   it("discovers the Actions service and issues scale-set requests", async () => {
@@ -78,6 +82,49 @@ describe("ScaleSetClient", () => {
           credential: { type: "github-app", clientId: "1", installationId: 1, privateKey: "" },
         }),
     ).toThrow("invalid credentials: app private key is required");
+    expect(
+      () =>
+        new ScaleSetClient({
+          ...options,
+          credential: {
+            type: "github-app",
+            clientId: "1",
+            installationId: 1,
+            privateKey: "not a private key",
+          },
+        }),
+    ).toThrow("invalid credentials: failed to parse RSA private key from PEM");
+    expect(
+      () =>
+        new ScaleSetClient({
+          ...options,
+          credential: {
+            type: "github-app-jwt-provider",
+            installationId: 0,
+            jwtProvider: { getJwt: async () => "jwt" },
+          },
+        }),
+    ).toThrow("invalid credentials: app installation ID is required");
+    expect(() =>
+      githubAppJwtProvider({ installationId: 42, jwtProvider: undefined as never }),
+    ).toThrow("JWT provider with getJwt is required");
+    expect(() =>
+      githubAppJwtProvider({
+        installationId: 0,
+        jwtProvider: { getJwt: async () => "jwt" },
+      }),
+    ).toThrow("GitHub App installation ID is required");
+    expect(
+      () =>
+        new ScaleSetClient({
+          ...options,
+          credential: {
+            type: "github-app-jwt-provider",
+            installationId: 42,
+            jwtProvider: {} as never,
+          },
+        }),
+    ).toThrow("invalid credentials: JWT provider with getJwt is required");
   });
 
   it("adds labels when creating a scale set", async () => {
@@ -118,6 +165,69 @@ describe("ScaleSetClient", () => {
 
     await Promise.all([client.getRunner(1), client.getRunner(2)]);
     expect(provided).toBe(1);
+  });
+
+  it("uses a custom GitHub App JWT provider without loading a private key", async () => {
+    const requests: Request[] = [];
+    const signals: Array<AbortSignal | undefined> = [];
+    const controller = new AbortController();
+    const client = new ScaleSetClient({
+      githubConfigUrl: "https://github.example/org",
+      credential: githubAppJwtProvider({
+        installationId: 42,
+        jwtProvider: {
+          getJwt(signal) {
+            signals.push(signal);
+            return "kms-signed-jwt";
+          },
+        },
+      }),
+      fetch: async (input) => {
+        const request = new Request(input);
+        requests.push(request);
+        const path = new URL(request.url).pathname;
+        if (path.endsWith("/app/installations/42/access_tokens")) {
+          return json({ token: "installation-token", expires_at: "2099-01-01T00:00:00Z" }, 201);
+        }
+        if (path.endsWith("registration-token")) return json({ token: "registration" }, 201);
+        if (path.endsWith("runner-registration")) {
+          return json({ url: "https://actions.example/", token: adminToken }, 201);
+        }
+        return json({ id: 1, name: "runner" });
+      },
+    });
+
+    await expect(client.getRunner(1, { signal: controller.signal })).resolves.toMatchObject({
+      id: 1,
+    });
+    expect(requests[0]!.headers.get("authorization")).toBe("Bearer kms-signed-jwt");
+    expect(requests.map((request) => new URL(request.url).pathname)).toEqual([
+      "/api/v3/app/installations/42/access_tokens",
+      "/api/v3/orgs/org/actions/runners/registration-token",
+      "/api/v3/actions/runner-registration",
+      "/_apis/distributedtask/pools/0/agents/1",
+    ]);
+    expect(signals).toEqual([controller.signal]);
+  });
+
+  it("propagates custom GitHub App JWT provider failures", async () => {
+    const providerError = new Error("KMS unavailable");
+    const client = new ScaleSetClient({
+      githubConfigUrl: "https://github.example/org",
+      credential: githubAppJwtProvider({
+        installationId: 42,
+        jwtProvider: {
+          async getJwt() {
+            throw providerError;
+          },
+        },
+      }),
+      fetch: async () => {
+        throw new Error("request should not be sent");
+      },
+    });
+
+    await expect(client.getRunner(1)).rejects.toBe(providerError);
   });
 
   it("covers scale-set, group, runner, and JIT API operations", async () => {
@@ -224,10 +334,11 @@ describe("ScaleSetClient", () => {
   });
 
   it("creates Web Crypto compatible GitHub App JWTs", async () => {
-    const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
-      .privateKey.export({ type: "pkcs8", format: "pem" })
-      .toString();
-    const credential = githubApp({ clientId: "123", installationId: 456, privateKey: key });
+    const credential = githubApp({
+      clientId: "123",
+      installationId: 456,
+      privateKey: testAppPkcs8,
+    });
     const jwt = await createGitHubAppJwt(credential, new Date("2026-01-01T00:00:00Z"));
     const [, payload] = jwt.split(".");
     expect(JSON.parse(Buffer.from(payload!, "base64url").toString())).toMatchObject({
@@ -238,11 +349,8 @@ describe("ScaleSetClient", () => {
   });
 
   it("accepts traditional PKCS#1 GitHub App private keys", async () => {
-    const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
-      .privateKey.export({ type: "pkcs1", format: "pem" })
-      .toString();
     const jwt = await createGitHubAppJwt(
-      githubApp({ clientId: "123", installationId: 456, privateKey: key }),
+      githubApp({ clientId: "123", installationId: 456, privateKey: testAppPkcs1 }),
       new Date("2026-01-01T00:00:00Z"),
     );
     expect(jwt.split(".")).toHaveLength(3);
@@ -261,13 +369,14 @@ describe("ScaleSetClient", () => {
   });
 
   it("uses the injected clock for GitHub App authentication", async () => {
-    const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
-      .privateKey.export({ type: "pkcs8", format: "pem" })
-      .toString();
     let appJwt = "";
     const client = new ScaleSetClient({
       githubConfigUrl: "https://github.example/org",
-      credential: githubApp({ clientId: "123", installationId: 456, privateKey: key }),
+      credential: githubApp({
+        clientId: "123",
+        installationId: 456,
+        privateKey: testAppPkcs8,
+      }),
       clock: () => new Date("2026-01-01T00:00:00Z"),
       fetch: async (input) => {
         const request = new Request(input);

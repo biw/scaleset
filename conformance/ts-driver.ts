@@ -32,7 +32,7 @@ export interface Transcript {
   error?: { code: string };
 }
 
-const adminToken = "eyJhbGciOiJub25lIn0.eyJleHAiOjE4OTM0NTYwMDB9.signature";
+const adminToken = "eyJhbGciOiJub25lIn0.eyJleHAiOjE4OTM0NTYwMDB9.c2lnbmF0dXJl";
 
 export async function execute(scenario: Scenario): Promise<Transcript> {
   const requests: Transcript["requests"] = [];
@@ -95,7 +95,7 @@ export async function execute(scenario: Scenario): Promise<Transcript> {
       sleep: async () => {},
       systemInfo: {
         system: "reference",
-        version: "main@cb0405b",
+        version: "main@fb56300",
         commitSha: "",
         scaleSetId: 0,
         subsystem: "conformance",

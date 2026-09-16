@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vite-plus/test";
 import {
+  INITIAL_MESSAGE_ID,
   MessageSessionClient,
   RequestError,
   ScaleSetClient,
@@ -37,7 +38,7 @@ const statistics: RunnerScaleSetStatistic = {
   totalIdleRunners: 0,
 };
 
-describe("actions/scaleset cb0405b parity", () => {
+describe("actions/scaleset fb56300 parity", () => {
   it("client_test.go › TestNewGitHubAPIRequest", () => {
     const cases = [
       ["https://github.com/org/repo", "https://api.github.com/app/installations/123/access_tokens"],
@@ -526,35 +527,35 @@ describe("actions/scaleset cb0405b parity", () => {
       jobStartedMessages: [],
       jobCompletedMessages: [],
     };
-    const listener = new ScaleSetListener(
-      {
-        ...listenerClient(),
-        getMessage: async () => message,
-        deleteMessage: async () => {
-          calls.push("ack");
-        },
-        acquireJobs: async () => {
-          calls.push("acquire");
-          return [9];
-        },
+    const client = {
+      ...listenerClient(),
+      getMessage: async () => message,
+      deleteMessage: async () => {
+        calls.push("ack");
       },
-      { scaleSetId: 1 },
-    );
+      acquireJobs: async (_requestIds: number[]) => {
+        calls.push("acquire");
+        return [9];
+      },
+    };
+    const listener = new ScaleSetListener(client, { scaleSetId: 1 });
 
     await expect(
       listener.run(
         {
-          handleJobStarted() {},
-          handleJobCompleted() {},
-          handleDesiredRunnerCount() {
-            if (calls.length > 0) controller.abort(new Error("done"));
-            return statistics.totalAssignedJobs;
+          async scale(received) {
+            if (!received || received.messageId === INITIAL_MESSAGE_ID) return;
+            calls.push("scale");
+            await client.acquireJobs(
+              received.jobAvailableMessages.map((job) => job.runnerRequestId),
+            );
+            controller.abort(new Error("done"));
           },
         },
         controller.signal,
       ),
     ).rejects.toThrow("done");
-    expect(calls).toEqual(["ack", "acquire"]);
+    expect(calls).toEqual(["scale", "acquire", "ack"]);
   });
 
   it.runIf(runScaleSetE2e)(
