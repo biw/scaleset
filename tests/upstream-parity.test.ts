@@ -4,7 +4,7 @@ import { createServer as createHttpsServer } from "node:https";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import {
   INITIAL_MESSAGE_ID,
   MessageSessionClient,

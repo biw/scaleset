@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import { loadConformanceScenarios, runConformanceScenario } from "../conformance/run.js";
 
 const scenarios = await loadConformanceScenarios();

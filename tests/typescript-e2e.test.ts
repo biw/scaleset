@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 
 const runScaleSetE2e = process.env.RUN_SCALESET_E2E === "true";
 const readyMarker = "SCALESET_TYPESCRIPT_PROVIDER_READY";
