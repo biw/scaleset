@@ -4,7 +4,19 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      # vite-plus requires the `vite` catalog alias to point at the matching
+      # @voidzero-dev/vite-plus-core version, so they must move together.
+      vite-plus:
+        patterns:
+          - vite-plus
+          - "@voidzero-dev/vite-plus-core"
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      # codeql-action/init and codeql-action/analyze must run the same version.
+      codeql-action:
+        patterns:
+          - github/codeql-action*

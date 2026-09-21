@@ -22,15 +22,15 @@ minimumReleaseAgeExclude:
   - "@vitest/ui@5.0.1"
   - "@vitest/utils@5.0.1"
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.3.2
-  vite-plus: 0.3.2
+  vite: npm:@voidzero-dev/vite-plus-core@0.3.3
+  vite-plus: 0.3.3
   vitest: 5.0.1
   "@vitest/browser": 5.0.1
   "@vitest/browser-preview": 5.0.1
   "@vitest/coverage-v8": 5.0.1
 packageExtensions:
   # Keep each test runner paired with its own optional, version-locked plugins.
-  "vite-plus@0.3.2":
+  "vite-plus@0.3.3":
     dependencies:
       "@vitest/coverage-v8": 4.1.11
 peerDependencyRules:
