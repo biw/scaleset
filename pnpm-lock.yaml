@@ -207,8 +207,8 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@vitest/browser@5.0.1)(vitest@5.0.1)
       emulate:
-        specifier: 0.11.2
-        version: 0.11.2
+        specifier: 0.12.0
+        version: 0.12.0
       tsx:
         specifier: ^4.23.13
         version: 4.23.13
@@ -1281,8 +1281,8 @@ packages:
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
 
-  emulate@0.11.2:
-    resolution: {integrity: sha512-BHs1rG/yPQ4kM+9aUz7fg4MDn0MshxOs0Ch2ciuNFPsN4PfCxQWP/9DGFZx+h+RvcIwX5n+hV308Ba7SxBc6nQ==}
+  emulate@0.12.0:
+    resolution: {integrity: sha512-L6MuuRLgbi5RmvmJ5zkTVrkQRN49ik52VqseO+OmKJDLa33nD1SVyInd7hFDTrA/Zsos9sZXbMz4e8wejnsX0Q==}
     hasBin: true
 
   es-module-lexer@2.3.2:
@@ -2387,7 +2387,7 @@ snapshots:
 
   dom-accessibility-api@0.5.16: {}
 
-  emulate@0.11.2:
+  emulate@0.12.0:
     dependencies:
       commander: 14.0.3
       picocolors: 1.1.1
