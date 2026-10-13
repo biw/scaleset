@@ -18,4 +18,4 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    uses: biw/npm-trusted-publish-workflows/.github/workflows/publish.yml@15d9817c4918e1d26b9c1b36fc8a975a15e2c62a # v1.0.1
+    uses: biw/npm-trusted-publish-workflows/.github/workflows/publish.yml@f2717133c7bf3a13ccc5eb1d35a4f41bd24074fb # v1.1.0
